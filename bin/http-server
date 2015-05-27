@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+console.log(process.pid);
+var processPID = process.pid;
+
 var colors     = require('colors'),
     httpServer = require('../lib/http-server'),
     portfinder = require('portfinder'),
@@ -46,6 +49,19 @@ var port = argv.p || parseInt(process.env.PORT, 10),
 if (!argv.s && !argv.silent) {
   requestLogger = function(req, res, error) {
     var date = (new Date).toUTCString();
+
+    console.log(req.url);
+
+    if (req.url && req.url.indexOf("_READIUMHTTPEXIT_") != -1) {
+
+      console.log("_READIUMHTTPEXIT_: " + processPID);
+
+      //process.exit();
+      process.emit('SIGINT');
+      //process.kill(processPID, 'SIGINT');
+      return;
+    }
+
     if (error) {
       log('[%s] "%s %s" Error (%s): "%s"', date, req.method.red, req.url.red, error.status.toString().red, error.message.red);
     } else {
