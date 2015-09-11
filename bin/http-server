@@ -4,12 +4,15 @@ console.log(process.pid);
 var processPID = process.pid;
 
 var colors     = require('colors'),
+    os         = require('os'),
     httpServer = require('../lib/http-server'),
     portfinder = require('portfinder'),
-    opener = require('opener'),
-    argv = require('optimist')
+    opener     = require('opener'),
+    argv       = require('optimist')
       .boolean('cors')
       .argv;
+
+var ifaces = os.networkInterfaces();
 
 if (argv.h || argv.help) {
   console.log([
@@ -114,6 +117,16 @@ function listen(port) {
       + ' on: '.yellow
       + (protocol + '//' + host + ':' + port).cyan);
 
+    log('\nAvailable on:'.yellow);
+
+    Object.keys(ifaces).forEach(function (dev) {
+      ifaces[dev].forEach(function (details) {
+        if (details.family == 'IPv4') {
+          log(("    http://" + details.address + ":" + port.toString()).green);
+        }
+      });
+    });
+
     if (typeof proxy === 'string') {
       log('Unhandled requests will be served from: ' + proxy);
     }
@@ -138,6 +151,11 @@ if (process.platform === 'win32') {
 }
 
 process.on('SIGINT', function() {
+  log('http-server stopped.'.red);
+  process.exit();
+});
+
+process.on('SIGTERM', function() {
   log('http-server stopped.'.red);
   process.exit();
 });
