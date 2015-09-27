@@ -48,7 +48,7 @@ var port = argv.p || parseInt(process.env.PORT, 10),
     host = argv.a || '0.0.0.0',
     ssl = !!argv.S || !!argv.ssl,
     proxy = argv.P || argv.proxy,
-    logger = colors && {};
+    logger;
 
 if (!argv.s && !argv.silent) {
 
@@ -84,6 +84,12 @@ if (req.url && req.url.indexOf("_READIUMHTTPEXIT_") != -1) {
         );
       }
     }
+  };
+}
+else if (colors) {
+  logger = {
+    info: function () {},
+    request: function () {}
   };
 }
 
@@ -126,18 +132,16 @@ function listen(port) {
     var canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host,
         protocol      = ssl ? 'https:' : 'http:';
 
-    logger.info('Starting up http-server, serving '.yellow
-      + server.root.cyan
-      + ssl ? ' through'.yellow + ' https'.cyan : ''
-      + ' on: '.yellow
-      + (protocol + '//' + host + ':' + port).cyan);
-
-    logger.info('\nAvailable on:'.yellow);
+    logger.info(['Starting up http-server, serving '.yellow,
+      server.root.cyan,
+      ssl ? (' through'.yellow + ' https'.cyan) : '',
+      '\nAvailable on:'.yellow
+    ].join(''));
 
     Object.keys(ifaces).forEach(function (dev) {
       ifaces[dev].forEach(function (details) {
         if (details.family === 'IPv4') {
-          logger.info(('    http://' + details.address + ':' + port.toString()).green);
+          logger.info(('  ' + protocol + details.address + ':' + port.toString()).green);
         }
       });
     });
