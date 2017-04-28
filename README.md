@@ -18,20 +18,6 @@ This will install `http-server` globally so that it may be run from the command 
 
 `[path]` defaults to `./public` if the folder exists, and `./` otherwise.
 
-# Installing as a node app
-
-     mkdir myapp
-     cd myapp/
-     jitsu install http-server
-
-*If you do not have `jitsu` installed you can install it via `npm install jitsu -g`*
-
-## Usage
-
-### Starting http-server locally
-
-     node bin/http-server
-
 *Now you can visit http://localhost:8080 to view your server*
 
 ## Available Options:
@@ -69,3 +55,17 @@ This will install `http-server` globally so that it may be run from the command 
 `-r` or `--robots` Provide a /robots.txt (whose content defaults to 'User-agent: *\nDisallow: /')
 
 `-h` or `--help` Print this list and exit.
+
+# Development
+
+Checkout this repository locally, then:
+
+```sh
+$ npm i
+$ node bin/http-server
+```
+
+*Now you can visit http://localhost:8080 to view your server*
+
+You should see the turtle image in the screenshot above hosted at that URL. See
+the `./public` folder for demo content.
